@@ -5,7 +5,6 @@ const router = express.Router();
 router.use("/register", require("./register"));
 router.use("/login", require("./login"));
 router.use("/logout", require("./logout"));
-router.use("/forgotPassword", require("./forgotPassword"));
-router.use("/resetPassword", require("./resetPassword"));
+router.use("/passwordReset", require("./passwordReset"));
 
 module.exports = router;

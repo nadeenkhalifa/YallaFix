@@ -1,8 +1,8 @@
 const validRoles = [
-  "Community Member",
-  "Facility Manager",
-  "Worker",
-  "Admin",
+  "reporter",
+  "manager",
+  "worker",
+  "admin",
 ];
 
 function requireRole(...roles) {

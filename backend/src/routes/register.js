@@ -10,7 +10,7 @@ const router = express.Router();
 // Register a new user
 router.post("/", async (req, res) => {
   const { email, password, name, role } = req.body;
-  const normalizedRole = role || "Community Member";
+  const normalizedRole = role || "reporter";
 
   // Validate input
   if (!email || !password || !name) {
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
 
     // Create user
     const result = await pool.query(
-      `INSERT INTO users (email, password_hash, name, role, created_at)
+      `INSERT INTO users (email, password, name, role, created_at)
        VALUES ($1, $2, $3, $4, NOW())
        RETURNING id, email, name, role`,
       [email, hashedPassword, name, normalizedRole]

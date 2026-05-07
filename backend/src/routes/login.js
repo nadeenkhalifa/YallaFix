@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
   try {
     // Find user by email
     const result = await pool.query(
-      "SELECT id, email, name, role, password_hash FROM users WHERE email = $1",
+      "SELECT id, email, name, role, password FROM users WHERE email = $1",
       [email]
     );
 
@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
     const user = result.rows[0];
 
     // Check password
-    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
