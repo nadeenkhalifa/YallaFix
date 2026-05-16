@@ -10,7 +10,7 @@ const router = express.Router();
 // Register a new user
 router.post("/", async (req, res) => {
   const { email, password, name, role } = req.body;
-  const normalizedRole = role || "reporter";
+  const normalizedRole = role || "Community Member";
 
   // Validate input
   if (!email || !password || !name) {

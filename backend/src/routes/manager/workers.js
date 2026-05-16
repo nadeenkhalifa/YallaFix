@@ -25,19 +25,14 @@ router.get("/", async (req, res) => {
 router.put("/:id/status", async (req, res) => {
   const { is_active } = req.body;
   if (typeof is_active !== "boolean") {
-    return res.status(400).json({ error: "is_active must be boolean" });
+    return res.status(400).json({ error: "is_active must be a boolean" });
   }
-
   try {
     const result = await pool.query(
       `UPDATE users SET is_active = $1 WHERE id = $2 AND role = 'Worker' RETURNING id, name, email, role, is_active`,
       [is_active, req.params.id]
     );
-
-    if (!result.rows[0]) {
-      return res.status(404).json({ error: "Worker not found" });
-    }
-
+    if (!result.rows[0]) return res.status(404).json({ error: "Worker not found" });
     res.json({ worker: result.rows[0] });
   } catch (err) {
     console.error(err);

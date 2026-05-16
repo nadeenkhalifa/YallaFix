@@ -10,6 +10,10 @@ async function requireAuth(req, res, next) {
     return res.status(401).json({ error: "Missing Authorization header" });
   }
 
+  if (isTokenBlacklisted(token)) {
+    return res.status(401).json({ error: "Token has been invalidated" });
+  }
+
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     const result = await pool.query(

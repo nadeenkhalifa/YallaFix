@@ -1,4 +1,3 @@
-// src/index.js
 require("dotenv").config();
 
 const express = require("express");
@@ -6,35 +5,30 @@ const cors = require("cors");
 
 const authRoutes = require("./routes/auth");
 const complaintsRoutes = require("./routes/complaints");
-const attachmentsRoutes = require("./routes/attachments");
 const notificationsRoutes = require("./routes/notifications");
-const assignmentsRoutes = require("./routes/assignments");
 const pool = require("./db");
 
-// Required environment variables
 const requiredEnv = ["DATABASE_URL", "JWT_SECRET"];
 for (const key of requiredEnv) {
   if (!process.env[key]) {
-    console.error(`Missing env var: ${key}. Copy .env.example to .env and fill it in.`);
+    console.error(`Missing env var: ${key}`);
     process.exit(1);
   }
 }
 
 const app = express();
+app.use(cors());
+app.use(express.json({ limit: "20mb" }));
 
-app.use(cors());           // mobile app lives on a different origin
-app.use(express.json());   // parse JSON bodies (multipart handled by multer)
-
-// Mount routes
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintsRoutes);
-app.use("/attachments", attachmentsRoutes);
-app.use("/notifications", notificationsRoutes);
-app.use("/assignments", assignmentsRoutes);
+app.use("/api/notifications", notificationsRoutes);
 app.use("/api/manager/workers", require("./routes/manager/workers"));
 app.use("/api/admin/users", require("./routes/admin/users"));
+app.use("/api/admin/categories", require("./routes/admin/categories"));
+app.use("/api/admin/locations", require("./routes/admin/locations"));
+app.use("/api/admin/activity-logs", require("./routes/admin/activityLogs"));
 
-// Last-resort error handler — logs and returns a generic 500
 app.use((err, _req, res, _next) => {
   console.error(err);
   res.status(500).json({ error: "Internal server error" });
