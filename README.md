@@ -1,50 +1,197 @@
-# Welcome to your Expo app 👋
+# YallaFix
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Smart Campus Facility Management System**
 
-## Get started
+-----
 
-1. Install dependencies
+## Overview
 
-   ```bash
-   npm install
-   ```
+YallaFix is a mobile application built for the German International University (GIU) to streamline campus facility issue reporting and resolution. The system connects three types of users: Community Members (reporters), Facility Managers, and Workers.
 
-2. Start the app
+-----
 
-   ```bash
-   npx expo start
-   ```
+## Technology Stack
 
-In the output, you'll find options to open the app in a
+|Layer          |Technology                             |
+|---------------|---------------------------------------|
+|Frontend       |React Native (Expo SDK 54)             |
+|Backend        |Node.js with Express.js                |
+|Database       |PostgreSQL (Supabase)                  |
+|Authentication |JWT (JSON Web Tokens) + Bcrypt         |
+|Storage        |Supabase Storage (Cloud Object Storage)|
+|Version Control|Git & GitHub                           |
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+-----
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Prerequisites
 
-## Get a fresh project
+- Node.js v18 or higher
+- npm v9 or higher
+- Expo CLI: `npm install -g expo-cli`
+- Expo Go app (download from iOS App Store or Google Play)
+- Supabase account (free tier available)
+- Git installed on your machine
 
-When you're ready, run:
+-----
 
-```bash
-npm run reset-project
+## Project Structure
+
+```
+YallaFix/
+├── app/                    # Expo Router screens
+│   ├── (tabs)/             # Tab navigator
+│   ├── auth/               # Login, Register, Forgot Password
+│   ├── community/          # Community member screens
+│   ├── manager/            # Facility manager screens
+│   ├── worker/             # Worker screens
+│   └── _layout.tsx         # Root layout + auth routing
+└── backend/                # Node.js + Express server
+    ├── src/
+    │   ├── routes/          # API route handlers
+    │   ├── middleware/      # Auth, role validation
+    │   ├── db.js            # Database connection
+    │   └── index.js         # Express entry point
+    └── .env                 # Environment variables
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+-----
 
-## Learn more
+## Installation & Setup
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Clone the Repository
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+git clone https://github.com/nadeenkhalifa/YallaFix
+cd YallaFix
+```
 
-## Join the community
+### 2. Set Up the Backend
 
-Join our community of developers creating universal apps.
+```bash
+cd backend
+npm install
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Create a `.env` file with the following variables:
+
+```env
+DATABASE_URL=postgresql://postgres.ruzakhretrdgdoybruws:Genan%40258200@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+JWT_SECRET=yallafix_secret_key_2026
+NODE_ENV=development
+PORT=3000
+```
+
+### 3. Set Up the Frontend
+
+```bash
+# From project root (YallaFix/)
+cd ..
+npm install
+npx expo install @react-native-async-storage/async-storage
+```
+
+Update the API base URL in `services/api.ts`:
+
+```ts
+const BASE_URL = 'http://YOUR_PC_IP:3000/api';
+```
+
+> **Note:** Replace `YOUR_PC_IP` with your machine’s local IP address.
+> 
+> - **Windows:** run `ipconfig`
+> - **Mac/Linux:** run `ifconfig`
+> - Ensure your phone and PC are on the same WiFi network.
+
+```bash
+npx expo start
+```
+
+Scan the QR code with the Expo Go app:
+
+- **iOS:** Open Camera → tap the notification
+- **Android:** Open Expo Go app → Scan QR
+
+-----
+
+## Database Setup
+
+Run the following SQL in the Supabase SQL Editor:
+
+```sql
+-- Create tables (see DATABASE_SCHEMA documentation for full schema)
+-- Or execute the provided database migration scripts
+```
+
+-----
+
+## User Roles & Permissions
+
+|Role            |Permissions                                                 |
+|----------------|------------------------------------------------------------|
+|Community Member|Submit issues, view own issues, confirm issues, comment     |
+|Facility Manager|View all issues, assign workers, change status, post updates|
+|Worker          |View assigned issues, update progress, upload proof         |
+
+-----
+
+## Running the Application
+
+### Start Backend
+
+```bash
+cd backend && node src/index.js
+```
+
+Expected output: `Server listening on http://localhost:3000`
+
+### Start Frontend
+
+```bash
+cd .. && npx expo start
+```
+
+Scan the QR code with Expo Go on your phone.
+
+### Test the App
+
+1. Create an account with role `reporter`
+1. Submit a complaint with photo, location, and category
+1. Log in as `manager` role to view and assign issues
+1. Log in as `worker` to view assigned tasks
+
+-----
+
+## Troubleshooting
+
+### ‘Cannot reach server’ or ‘404 errors’
+
+- Verify the backend is running on port 3000
+- Check the API base URL in `services/api.ts`
+- Ensure phone and PC are on the same WiFi network
+
+### Database connection fails
+
+- Verify `DATABASE_URL` in `backend/.env`
+- Check that the `@` symbol is URL-encoded as `%40`
+- Test connection with: `node -e "const pool = require('pg').Pool; ..."`
+
+### Permission errors (403)
+
+- Verify the user role matches API requirements (e.g., `manager` for assign-worker)
+- Check that the JWT token is valid and included in the `Authorization` header
+
+-----
+
+## Team
+
+Built for **INCS 617 - Software Engineering for Business Informatics**  
+**German International University (GIU) — Summer Semester 2026**
+
+|Name                 |ID      |Role     |
+|---------------------|--------|---------|
+|Nadeen El Khalifa    |13004534|Developer|
+|Mariam Ashraf        |13006964|Developer|
+|Malak Gharib         |13007525|Developer|
+|Nour Samir           |13006170|Developer|
+|Ganna Hamza          |13003623|Developer|
+|Abdelrahman El Khatib|13002667|Developer|
